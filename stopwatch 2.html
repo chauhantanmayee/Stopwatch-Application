@@ -1,0 +1,146 @@
+<html>
+<head>
+    <title>Stopwatch</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+             /* background: black; */
+            background: linear-gradient(0deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%); 
+            font-family: Arial, sans-serif;
+        }
+
+        .stopwatch {
+            background: #7fdbe9;
+            overflow: inherit;
+            border-radius: 5px;
+            padding: 20px;
+            background: rgb(2, 0, 36);
+            background: linear-gradient(360deg, rgba(2, 0, 36, 1) 10%, rgba(0, 212, 255, 1) 60%, rgba(183, 193, 174, 1) 100%);
+            -webkit-box-shadow: 15px 10px 10px rgba(20, 2, 2, 0.886);
+            /* background-color: #eeaeca; */
+            text-align: center;
+        }
+
+        #display {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .buttons button {
+            font-size: 1em;
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color:#F3C5FF;
+            color: black;
+        }
+
+        #laps {
+            margin-top: 20px;
+            padding: 20px;
+            height: 150px;
+            overflow-y: auto;
+            text-align: left;
+            /* background-color: rgb(239, 182, 223); */
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-image: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+
+        }
+
+        .lap {
+            background-color: #ffffff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stopwatch">
+        <div id="display">00:00:00</div>
+        <div class="buttons">
+            <button id="startStop">Start</button>
+            <button id="reset">Reset</button>
+            <button id="lap">Lap</button>
+        </div>
+        <div id="laps"></div>
+    </div>
+    <script>
+        let startTime, updatedTime, difference, tInterval, running = false, lapCount = 0;
+        const display = document.getElementById('display');
+        const startStopButton = document.getElementById('startStop');
+        const resetButton = document.getElementById('reset');
+        const lapButton = document.getElementById('lap');
+        const laps = document.getElementById('laps');
+
+        function startStopwatch() {
+            startTime = new Date().getTime();
+            tInterval = setInterval(getShowTime, 1);
+            running = true;
+            startStopButton.innerHTML = "Pause";
+        }
+
+        function pauseStopwatch() {
+            clearInterval(tInterval);
+            running = false;
+            startStopButton.innerHTML = "Start";
+        }
+
+        function resetStopwatch() {
+            clearInterval(tInterval);
+            running = false;
+            display.innerHTML = "00:00:00";
+            startStopButton.innerHTML = "Start";
+            laps.innerHTML = '';
+            lapCount = 0;
+        }
+
+        function getShowTime() {
+            updatedTime = new Date().getTime();
+            difference = updatedTime - startTime;
+
+            let hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            let milliseconds = Math.floor((difference % 1000) / 10);
+
+            hours = (hours < 10) ? "0" + hours : hours;
+            minutes = (minutes < 10) ? "0" + minutes : minutes;
+            seconds = (seconds < 10) ? "0" + seconds : seconds;
+            milliseconds = (milliseconds < 10) ? "0" + milliseconds : milliseconds;
+
+            display.innerHTML = hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
+        }
+
+        function lapTime() {
+            if (running) {
+                lapCount++;
+                const lapItem = document.createElement('div');
+                lapItem.className = 'lap';
+                lapItem.innerHTML = "Lap " + lapCount + ": " + display.innerHTML;
+                laps.appendChild(lapItem);
+            }
+        }
+
+        startStopButton.addEventListener('click', function () {
+            if (!running) {
+                startStopwatch();
+            } else {
+                pauseStopwatch();
+            }
+        });
+
+        resetButton.addEventListener('click', resetStopwatch);
+        lapButton.addEventListener('click', lapTime);
+
+    </script>
+</body>
+
+</html>
